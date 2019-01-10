@@ -12,7 +12,7 @@ module ASM-SYNTAX
     syntax BExp ::= Bool
                   | "cmp" Reg "," Var
 
-    syntax Op   ::= "mov" Reg "," Var [strict]
+    syntax Op   ::= "mov" Reg "," Var [strict (2)]
                   | "add" Reg "," Var [strict]
                   | "sub" Reg "," Var [strict]
                   | "mul" Reg "," Var [strict]
@@ -44,14 +44,13 @@ module ASM
 	syntax KResult ::= Int
 	configuration <T>
 					<k> $PGM:Line </k>
-					<env> EAX |-> -1 EBX |->-1 ECX |-> -1 EDX |-> -1</env>
+					<env> EAX |-> 1 EBX |->-1 ECX |-> -1 EDX |-> -1</env>
 				  </T>
 	
 	rule L1:Line L2:Line => L1 ~> L2
 	 
  
-    rule <k> mov X:Reg, Y:Int  => . ...</k>
-		 <env>...  X |-> (_=> Y) ...</env>
-
-
+    rule <k> mov X:Reg, Y:Var  => . ...</k>
+        <env>... X |-> (_=> Y)  ...</env>
+        
 endmodule
