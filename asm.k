@@ -13,7 +13,7 @@ module ASM-SYNTAX
                   | "cmp" Reg "," Var
 
     syntax Op   ::= "mov" Reg "," Var [strict (2)]
-                  | "add" Reg "," Var [strict]
+                  | "add" Reg "," Var [strict (2)]
                   | "sub" Reg "," Var [strict]
                   | "mul" Reg "," Var [strict]
                   | "div" Reg "," Var [strict]
@@ -44,13 +44,27 @@ module ASM
 	syntax KResult ::= Int
 	configuration <T>
 					<k> $PGM:Line </k>
-					<env> EAX |-> 1 EBX |->-1 ECX |-> -1 EDX |-> -1</env>
+					<env> EAX |-> -2 EBX |->-1 ECX |-> -1 EDX |-> -1</env>
 				  </T>
 	
 	rule L1:Line L2:Line => L1 ~> L2
 	 
+    rule <k> (X:Reg => V) ...</k>
+        <env>... X |-> V:Int ..</env>
  
-    rule <k> mov X:Reg, Y:Var  => . ...</k>
-        <env>... X |-> (_=> Y)  ...</env>
+    rule <k> mov X:Reg, Y1:Int  => . ...</k>
+        <env>... X |-> (_=> Y1)  ...</env>
         
+    rule <k> mov X:Reg, Y2:Reg => . ...</k>
+        <env>... X |-> (_=> Z) Y2 |-> Z:Int ...</env>
+
+    // rule <k> add R:Reg, Y1:Int =>. ...</k>
+    //     <env>... R |-> (_=> V:Int) V |-> (Z +Int Y1)  R |-> Z:Int...</env>
+
+    rule <k> (add R:Reg, Y1:Int => Z +Int Y1) ...</k>
+        <env>... R |-> (Z:Int=> Z +Int Y1) ...</env>
+
+    rule <k> (add R1:Reg, Y2:Reg => V +Int Z) ...</k>
+        <env>... R1 |-> (V:Int=> V +Int Z) Y2 |-> Z:Int ...</env>
+    
 endmodule
