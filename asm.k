@@ -62,18 +62,34 @@ module ASM
     // rule <k> add R:Reg, Y1:Int =>. ...</k>
     //     <env>... R |-> (_=> V:Int) V |-> (Z +Int Y1)  R |-> Z:Int...</env>
 
-// add Function:
-    rule <k> (add R:Reg, Y1:Int =>.) ...</k>
+// add op
+    rule <k> (add R:Reg, Y1:Int => .) ...</k>
         <env>... R |-> (Z:Int=> Z +Int Y1) ...</env>
 
     rule <k> (add R1:Reg, Y2:Reg => .) ...</k>
         <env>... R1 |-> (V:Int=> V +Int Z) Y2 |-> Z:Int ...</env>
 
-// sub Function
-    rule <k> (sub R:Reg, Y1:Int =>.) ...</k>
+// sub op
+    rule <k> (sub R:Reg, Y1:Int => .) ...</k>
         <env>... R |-> (Z:Int=> Z -Int Y1) ...</env>
 
     rule <k> (sub R1:Reg, Y2:Reg =>.) ...</k>
         <env>... R1 |-> (V:Int=> V -Int Z) Y2 |-> Z:Int ...</env>
+
+// mul op
+    rule <k> (mul R:Reg, Y1:Int => .) ...</k>
+        <env>... R |-> (Z:Int=> Z *Int Y1) ...</env>
+
+    rule <k> (mul R1:Reg, Y2:Reg => .) ...</k>
+        <env>... R1 |-> (V:Int=> V *Int Z) Y2 |-> Z:Int ...</env>
+
+// div op
+    rule <k> (div R:Reg, Y1:Int => .) ...</k>
+        <env>... R |-> (Z:Int=> Z /Int Y1) ...</env>
+
+    rule <k> (div R:Reg, Y:Reg => .) ...</k>
+        <env>... R |-> (X:Int=> X /Int Z) Y |-> Z:Int ...</env>
+
+// inc op
 
 endmodule
