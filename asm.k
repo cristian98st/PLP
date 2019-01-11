@@ -9,14 +9,22 @@ module ASM-SYNTAX
 
     syntax AExp ::= Id
 
-    syntax BExp ::= Bool
-                  | "cmp" Reg "," Var
+    syntax BExp ::= "cmp" Reg "," Var Jump
+
+    syntax Jump ::= "jmp" Func Line Func Op
+                  | "je" Func Line Func Line
+                  | "jne" Func Line Func Line
+                  | "jg" Func Line Func Line
+                  | "jge" Func Line Func Line
+                  | "jl" Func Line Func Line
+                  | "jle" Func Line Func Line
+                  | "loop" Func Line Func Line
 
     syntax Op   ::= "mov" Reg "," Var [strict (2)]
-                  | "add" Reg "," Var [left]
-                  | "sub" Reg "," Var [left]
-                  | "mul" Reg "," Var [strict]
-                  | "div" Reg "," Var [strict]
+                  | "add" Reg "," Var [left, strict(2)]
+                  | "sub" Reg "," Var [left, strict(2)]
+                  | "mul" Reg "," Var [left]
+                  | "div" Reg "," Var [left]
                   | "inc" Reg [strict]
                   | "dec" Reg [strict]
                   | "and" Reg "," Var
@@ -34,6 +42,7 @@ module ASM-SYNTAX
                     | Op
                     | Extra
                     | Func
+                    | Jump
                     > Line Line [right]
 
 endmodule
@@ -80,8 +89,8 @@ module ASM
     rule <k> (mul R:Reg, Y1:Int => .) ...</k>
         <env>... R |-> (Z:Int=> Z *Int Y1) ...</env>
 
-    rule <k> (mul R1:Reg, Y2:Reg => .) ...</k>
-        <env>... R1 |-> (V:Int=> V *Int Z) Y2 |-> Z:Int ...</env>
+    rule <k> (mul R:Reg, Y:Reg => .) ...</k>
+        <env>... R |-> (X:Int=> X *Int Z) Y |-> Z:Int ...</env>
 
 // div op
     rule <k> (div R:Reg, Y1:Int => .) ...</k>
@@ -91,5 +100,14 @@ module ASM
         <env>... R |-> (X:Int=> X /Int Z) Y |-> Z:Int ...</env>
 
 // inc op
+    rule <k> (inc R:Reg => .) ...</k>
+        <env>... R |-> (Z:Int=> Z +Int 1) ...</env>
+
+// dec op
+    rule <k> (dec R:Reg => .) ...</k>
+        <env>... R |-> (Z:Int=> Z -Int 1) ...</env>
+
+// jmp
+    rule <k> jmp L:Func O1:Line L O2:Op => O2 ...</k>
 
 endmodule

@@ -3,15 +3,15 @@ mov EBX, EAX
 mov ECX, EAX
 add EBX, 2
 add ECX, EBX
-
 sub ECX, 2
 
+_. back
 mul EAX, 2
-mov EDX, 3
-mul EAX, EDX
+inc EAX
+jmp _.dest
 
-sub EBX, 2
-div ECX, 2
-mov EBX, 10
-div ECX, EBX
-mov EBX, ECX
+loop _.back
+
+_.dest
+mov EBX, EAX
+inc ECX
