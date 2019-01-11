@@ -13,8 +13,8 @@ module ASM-SYNTAX
                   | "cmp" Reg "," Var
 
     syntax Op   ::= "mov" Reg "," Var [strict (2)]
-                  | "add" Reg "," Var [strict (2)]
-                  | "sub" Reg "," Var [strict]
+                  | "add" Reg "," Var [left]
+                  | "sub" Reg "," Var [left]
                   | "mul" Reg "," Var [strict]
                   | "div" Reg "," Var [strict]
                   | "inc" Reg [strict]
@@ -51,7 +51,8 @@ module ASM
 	 
     rule <k> (X:Reg => V) ...</k>
         <env>... X |-> V:Int ..</env>
- 
+
+ // mov Function
     rule <k> mov X:Reg, Y1:Int  => . ...</k>
         <env>... X |-> (_=> Y1)  ...</env>
         
@@ -61,10 +62,18 @@ module ASM
     // rule <k> add R:Reg, Y1:Int =>. ...</k>
     //     <env>... R |-> (_=> V:Int) V |-> (Z +Int Y1)  R |-> Z:Int...</env>
 
-    rule <k> (add R:Reg, Y1:Int => Z +Int Y1) ...</k>
+// add Function:
+    rule <k> (add R:Reg, Y1:Int =>.) ...</k>
         <env>... R |-> (Z:Int=> Z +Int Y1) ...</env>
 
-    rule <k> (add R1:Reg, Y2:Reg => V +Int Z) ...</k>
+    rule <k> (add R1:Reg, Y2:Reg => .) ...</k>
         <env>... R1 |-> (V:Int=> V +Int Z) Y2 |-> Z:Int ...</env>
-    
+
+// sub Function
+    rule <k> (sub R:Reg, Y1:Int =>.) ...</k>
+        <env>... R |-> (Z:Int=> Z -Int Y1) ...</env>
+
+    rule <k> (sub R1:Reg, Y2:Reg =>.) ...</k>
+        <env>... R1 |-> (V:Int=> V -Int Z) Y2 |-> Z:Int ...</env>
+
 endmodule

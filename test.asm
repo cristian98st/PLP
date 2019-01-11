@@ -1,6 +1,6 @@
-mov EAX, 3
-mov EDX, 5
-mov EBX, 70
-mov EAX, EDX
-add EAX, 76
-mov EBX, 71
+mov EAX, 20
+mov EBX, EAX
+mov ECX, EAX
+add EBX, 2
+add ECX, EBX
+sub ECX, 2
