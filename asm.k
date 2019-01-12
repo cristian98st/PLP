@@ -18,7 +18,7 @@ module ASM-SYNTAX
                   | "jl" Func Line Func Line
                   | "jle" Func Line Func Line
                   //| Func Line "loop" Func Op
-                  | "jmp" Func Line Func Line 
+                  | "jmp" Func Line Func Line
 
     syntax Op   ::= "mov" Reg "," Var [strict (2)]
                   | "add" Reg "," Var [left, strict(2)]
