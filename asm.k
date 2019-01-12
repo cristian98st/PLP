@@ -17,7 +17,7 @@ module ASM-SYNTAX
                   | "jge" Func Line Func Line
                   | "jl" Func Line Func Line
                   | "jle" Func Line Func Line
-                  //| Func Line "loop" Func Op
+                  //| Func Line "loop" Func
                   | "jmp" Func Line Func Line
 
     syntax Op   ::= "mov" Reg "," Var [strict (2)]
@@ -114,6 +114,6 @@ module ASM
     rule <k> jmp L:Func O1:Line L O2:Line => O2 ...</k>
 
 // loop
-   // rule <k>  L:Func O1:Line loop L O2:Op => L~>O1 ...</k>
+   // rule <k>  L:Func O1:Line loop L => L~>O1 ...</k>
 
 endmodule
