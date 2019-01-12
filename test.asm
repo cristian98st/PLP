@@ -4,14 +4,16 @@ mov ECX, EAX
 add EBX, 2
 add ECX, EBX
 sub ECX, 2
-
-_. back
-mul EAX, 2
-inc EAX
 jmp _.dest
 
-loop _.back
+mov EAX, EBX
+inc EDX
+
+_.back
+mov EAX, EBX
+inc EAX
 
 _.dest
-mov EBX, EAX
+mul EBX, 2
+inc ECX
 inc ECX

@@ -11,20 +11,20 @@ module ASM-SYNTAX
 
     syntax BExp ::= "cmp" Reg "," Var Jump
 
-    syntax Jump ::= "jmp" Func Line Func Op
+    syntax Jump ::= "jmp" Func Line Func Op [right]
                   | "je" Func Line Func Line
                   | "jne" Func Line Func Line
                   | "jg" Func Line Func Line
                   | "jge" Func Line Func Line
                   | "jl" Func Line Func Line
                   | "jle" Func Line Func Line
-                  | "loop" Func Line Func Line
+                  | Func Line "loop" Func Op
 
     syntax Op   ::= "mov" Reg "," Var [strict (2)]
                   | "add" Reg "," Var [left, strict(2)]
                   | "sub" Reg "," Var [left, strict(2)]
-                  | "mul" Reg "," Var [left]
-                  | "div" Reg "," Var [left]
+                  | "mul" Reg "," Var [left, strict(2)]
+                  | "div" Reg "," Var [left, strict(2)]
                   | "inc" Reg [strict]
                   | "dec" Reg [strict]
                   | "and" Reg "," Var
@@ -109,5 +109,8 @@ module ASM
 
 // jmp
     rule <k> jmp L:Func O1:Line L O2:Op => O2 ...</k>
+
+// loop
+   // rule <k>  L:Func O1:Line loop L O2:Op => L~>O1 ...</k>
 
 endmodule
