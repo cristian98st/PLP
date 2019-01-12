@@ -1,19 +1,20 @@
-mov EAX, 20
-mov EBX, EAX
-mov ECX, EAX
-add EBX, 2
-add ECX, EBX
-sub ECX, 2
-jmp _.dest
+mov EAX, 10
+mov EBX, 20
+mov ECX, 30
+mov EDX, 40
+jmp -hap
 
-mov EAX, EBX
-inc EDX
-
-_.back
-mov EAX, EBX
+mov EAX, EDX
 inc EAX
 
-_.dest
-mul EBX, 2
+-altceva
+mov EBX, 100
+inc EBX
+
+-dest
+mov ECX, 100
 inc ECX
-inc ECX
+
+-hap
+mov EDX, 100
+inc EDX

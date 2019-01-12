@@ -7,26 +7,26 @@ module ASM-SYNTAX
     syntax Var  ::= Reg
                   | Int
 
-    syntax AExp ::= Id
+    syntax Name ::= Id    
 
     syntax BExp ::= "cmp" Reg "," Var Jump
 
-    syntax Jump ::= "jmp" Func Line Func Op [right]
-                  | "je" Func Line Func Line
+    syntax Jump ::= "je" Func Line Func Line
                   | "jne" Func Line Func Line
                   | "jg" Func Line Func Line
                   | "jge" Func Line Func Line
                   | "jl" Func Line Func Line
                   | "jle" Func Line Func Line
-                  | Func Line "loop" Func Op
+                  //| Func Line "loop" Func Op
+                  | "jmp" Func Line Func Line 
 
     syntax Op   ::= "mov" Reg "," Var [strict (2)]
                   | "add" Reg "," Var [left, strict(2)]
                   | "sub" Reg "," Var [left, strict(2)]
                   | "mul" Reg "," Var [left, strict(2)]
                   | "div" Reg "," Var [left, strict(2)]
-                  | "inc" Reg [strict]
-                  | "dec" Reg [strict]
+                  | "inc" Reg
+                  | "dec" Reg
                   | "and" Reg "," Var
                   | "or"  Reg "," Var
                   | "xor" Reg "," Var
@@ -36,7 +36,7 @@ module ASM-SYNTAX
     syntax Extra::= "read" Reg
                   | "print" Reg
 
-    syntax Func ::= "_."AExp
+    syntax Func ::= "-"Name
                 
     syntax Line ::= BExp
                     | Op
@@ -107,8 +107,11 @@ module ASM
     rule <k> (dec R:Reg => .) ...</k>
         <env>... R |-> (Z:Int=> Z -Int 1) ...</env>
 
+// Func
+    rule <k> - N:Name L7:Line => L7 ...</k>
+
 // jmp
-    rule <k> jmp L:Func O1:Line L O2:Op => O2 ...</k>
+    rule <k> jmp L:Func O1:Line L O2:Line => O2 ...</k>
 
 // loop
    // rule <k>  L:Func O1:Line loop L O2:Op => L~>O1 ...</k>
