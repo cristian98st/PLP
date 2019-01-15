@@ -9,18 +9,21 @@ module ASM-SYNTAX
 
     syntax Name ::= Id    
 
-    syntax BExp ::= "cmp" Reg "," Var Jump
+    syntax BExp ::= Var "," Var "jle" [strict]
+                  | Bool
 
-    syntax Jump ::= "je" Func Line Func Line
+    syntax JumpC ::= "je" 
                   | "jne" Func Line Func Line
                   | "jg" Func Line Func Line
                   | "jge" Func Line Func Line
                   | "jl" Func Line Func Line
-                  | "jle" Func Line Func Line
-                  //| Func Line "loop" Func
-                  | "jmp" Func Line Func Line
+                //   | "jle" Func Line Func Line
+            
+    syntax Jump  ::="jmp" Func Line Func Line
+                //| Func Line "loop" Func
+                  |"cmp" BExp Func Line Func Line
 
-    syntax Op   ::= "mov" Reg "," Var [strict (2)]
+    syntax Op   ::= "mov" Reg "," MOV [strict (2)]
                   | "add" Reg "," Var [left, strict(2)]
                   | "sub" Reg "," Var [left, strict(2)]
                   | "mul" Reg "," Var [left, strict(2)]
@@ -33,14 +36,17 @@ module ASM-SYNTAX
                   | "not" Reg
                   | "test" Reg "," Reg
 
-    syntax Extra::= "read" Reg
-                  | "print" Reg
+    syntax MOV ::= READ
+                  | Var
+
+    syntax READ::= "read"
+    syntax PRINT::= "print" Reg
 
     syntax Func ::= "-"Name
                 
     syntax Line ::= BExp
                     | Op
-                    | Extra
+                    | PRINT
                     | Func
                     | Jump
                     > Line Line [right]
@@ -54,6 +60,9 @@ module ASM
 	configuration <T>
 					<k> $PGM:Line </k>
 					<env> EAX |-> -2 EBX |->-1 ECX |-> -1 EDX |-> -1</env>
+                    <stack> .List </stack>
+                    <in stream="stdin"> .List </in>
+                    <out stream="stdout"> .List </out>
 				  </T>
 	
 	rule L1:Line L2:Line => L1 ~> L2
@@ -116,4 +125,24 @@ module ASM
 // loop
    // rule <k>  L:Func O1:Line loop L => L~>O1 ...</k>
 
+// cmp
+    rule cmp true F1:Func L1:Line F1 L2:Line => L2
+    rule cmp false F1:Func L1:Line F1 L2:Line => L1
+
+// jle
+    rule X:Int , Y:Int jle => X <=Int Y
+
+//boolean rules
+
+    // rule (not T:Int) => -Bool T
+
+    // rule (true and B:Int) => B
+
+    // rule (false and _) => false
+
+// read
+    rule <k> (read => V) ...</k>
+       <in> (ListItem(V:Int) => .List) ...</in>
+
+       
 endmodule
